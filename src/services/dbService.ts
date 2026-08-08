@@ -45,9 +45,7 @@ export const dbService = {
   },
 
   async searchUsers(searchQuery: string, currentUid: string): Promise<UserProfile[]> {
-    if (!searchQuery.trim()) return [];
-    
-    const lowercaseQuery = searchQuery.toLowerCase();
+    const lowercaseQuery = searchQuery.trim().toLowerCase();
     const usersRef = collection(db, 'users');
     
     // We get all users and filter client-side for username/displayName prefix
@@ -58,10 +56,14 @@ export const dbService = {
     snapshot.forEach((doc) => {
       const data = doc.data() as UserProfile;
       if (data.uid !== currentUid) {
-        const usernameMatch = data.username.toLowerCase().includes(lowercaseQuery);
-        const displayNameMatch = data.displayName.toLowerCase().includes(lowercaseQuery);
-        if (usernameMatch || displayNameMatch) {
+        if (!lowercaseQuery) {
           results.push(data);
+        } else {
+          const usernameMatch = data.username.toLowerCase().includes(lowercaseQuery);
+          const displayNameMatch = data.displayName.toLowerCase().includes(lowercaseQuery);
+          if (usernameMatch || displayNameMatch) {
+            results.push(data);
+          }
         }
       }
     });

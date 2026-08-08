@@ -5,12 +5,12 @@ import { useCall } from '../contexts/CallContext';
 import { dbService } from '../services/dbService';
 import { UserProfile, FriendRequest } from '../types';
 import { db, collection, query, where, getDocs, limit } from '../firebase/config';
-import { ArrowLeft, MessageSquare, Heart, Phone, Video, Calendar, Sparkles, Settings, UserPlus, AlertCircle, Sparkle } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Heart, Phone, Video, Calendar, Sparkles, Settings, UserPlus, AlertCircle, Sparkle, LogOut } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { motion } from 'motion/react';
 
 export const Profile: React.FC = () => {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, logout } = useAuth();
   const { params, navigateTo } = useNavigation();
   const { startCall } = useCall();
   const usernameParam = params.username;
@@ -240,14 +240,27 @@ export const Profile: React.FC = () => {
               </h3>
 
               {friendshipStatus === 'me' && (
-                <button
-                  onClick={() => navigateTo('/settings')}
-                  className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-850 text-xs font-bold text-slate-300 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                  id="btn-profile-edit-shortcuts"
-                >
-                  <Settings className="w-4 h-4" />
-                  <span>Update Profile Details</span>
-                </button>
+                <div className="flex flex-col gap-3 w-full">
+                  <button
+                    onClick={() => navigateTo('/settings')}
+                    className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-850 text-xs font-bold text-slate-300 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    id="btn-profile-edit-shortcuts"
+                  >
+                    <Settings className="w-4 h-4 text-violet-400" />
+                    <span>Update Profile Details</span>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await logout();
+                      navigateTo('/login');
+                    }}
+                    className="w-full py-3 rounded-xl bg-rose-950/25 hover:bg-rose-950/40 border border-rose-900/30 text-xs font-bold text-rose-300 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    id="btn-profile-logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Log Out from Space</span>
+                  </button>
+                </div>
               )}
 
               {friendshipStatus === 'connected' && (

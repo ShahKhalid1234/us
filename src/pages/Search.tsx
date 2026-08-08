@@ -19,17 +19,15 @@ export const Search: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim() || !user) return;
+  const fetchUsers = async (queryStr: string) => {
+    if (!user) return;
 
     setLoading(true);
     setError(null);
-    setResults([]);
 
     try {
       // Search profiles
-      const users = await dbService.searchUsers(searchQuery, user.uid);
+      const users = await dbService.searchUsers(queryStr, user.uid);
       setResults(users);
 
       if (users.length === 0) {
@@ -110,6 +108,24 @@ export const Search: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      fetchUsers('');
+    }
+  }, [user]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchUsers(searchQuery);
+  };
+
+  const handleInputChange = (val: string) => {
+    setSearchQuery(val);
+    if (!val.trim()) {
+      fetchUsers('');
+    }
+  };
+
   const handleAddFriend = async (searchedUser: UserProfile) => {
     if (!userProfile) return;
     try {
@@ -145,10 +161,9 @@ export const Search: React.FC = () => {
             </span>
             <input
               type="text"
-              required
               placeholder="Search by unique @username or display name..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleInputChange(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-900 focus:border-violet-500/50 rounded-xl text-sm placeholder-slate-600 focus:outline-none transition-all"
               id="search-input"
             />
