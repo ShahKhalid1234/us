@@ -1,0 +1,6 @@
+{
+  "name": "Luvora",
+  "description": "A premium, private digital universe for couples and close friends, featuring real-time messaging, WebRTC audio/video calling, and a shared romantic Love Space.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

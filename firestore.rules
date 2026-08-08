@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Utility functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId);
+    }
+
+    // Friend Requests
+    match /friendRequests/{requestId} {
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid
+      );
+    }
+
+    // Friendships
+    match /friendships/{friendshipId} {
+      allow read: if isAuthenticated() && (
+        resource.data.user1Id == request.auth.uid || 
+        resource.data.user2Id == request.auth.uid
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.user1Id == request.auth.uid || 
+        request.resource.data.user2Id == request.auth.uid
+      );
+      allow update, delete: if isAuthenticated() && (
+        resource.data.user1Id == request.auth.uid || 
+        resource.data.user2Id == request.auth.uid
+      );
+    }
+
+    // Conversations
+    match /conversations/{conversationId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants
+      );
+      allow create: if isAuthenticated() && (
+        request.auth.uid in request.resource.data.participants
+      );
+      allow update: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants
+      );
+      allow delete: if false; // Chats cannot be deleted completely in this MVP, only messages if needed
+
+      // Messages (Subcollection)
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants
+        );
+        allow create: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants &&
+          request.resource.data.senderId == request.auth.uid
+        );
+        allow update, delete: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants &&
+          resource.data.senderId == request.auth.uid
+        );
+      }
+    }
+
+    // Love Spaces
+    match /loveSpaces/{loveSpaceId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants
+      );
+      allow create: if isAuthenticated() && (
+        request.auth.uid in request.resource.data.participants
+      );
+      allow update: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants
+      );
+
+      // Notes (Subcollection)
+      match /notes/{noteId} {
+        allow read, write: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/loveSpaces/$(loveSpaceId)).data.participants
+        );
+      }
+
+      // Memories (Subcollection)
+      match /memories/{memoryId} {
+        allow read, write: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/loveSpaces/$(loveSpaceId)).data.participants
+        );
+      }
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read, update, delete: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+      allow create: if isAuthenticated(); // Allowed so users can send notifications to their friends
+    }
+
+    // WebRTC Calls
+    match /calls/{callId} {
+      allow read: if isAuthenticated() && (
+        resource.data.callerId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.callerId == request.auth.uid
+      );
+      allow update, delete: if isAuthenticated() && (
+        resource.data.callerId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid
+      );
+    }
+  }
+}
