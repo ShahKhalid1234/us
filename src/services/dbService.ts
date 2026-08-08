@@ -1,4 +1,5 @@
 import {
+  db,
   collection,
   doc,
   getDoc,
@@ -16,8 +17,7 @@ import {
   increment,
   arrayUnion,
   arrayRemove
-} from 'firebase/firestore';
-import { db } from '../firebase/config';
+} from '../firebase/config';
 import { UserProfile, FriendRequest, Friendship, Conversation, Message, LoveSpace, LoveNote, Memory, AppNotification, WebRTCCall } from '../types';
 
 // Helper to sort two IDs to generate a stable, unique composite key

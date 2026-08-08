@@ -1,12 +1,12 @@
 import {
+  db,
   doc,
   setDoc,
   updateDoc,
   onSnapshot,
   arrayUnion,
   getDoc
-} from 'firebase/firestore';
-import { db } from '../firebase/config';
+} from '../firebase/config';
 import { WebRTCCall } from '../types';
 
 export const callService = {

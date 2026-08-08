@@ -3,8 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '../contexts/NavigationContext';
 import { dbService } from '../services/dbService';
 import { AppNotification, FriendRequest } from '../types';
-import { collection, query, where, orderBy, onSnapshot, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, orderBy, onSnapshot, getDocs } from '../firebase/config';
 import { Bell, Check, Trash2, Heart, MessageSquare, Star, Sparkles, X, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 

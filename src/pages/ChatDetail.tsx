@@ -4,8 +4,7 @@ import { useNavigation } from '../contexts/NavigationContext';
 import { useCall } from '../contexts/CallContext';
 import { dbService } from '../services/dbService';
 import { Message, UserProfile, Conversation } from '../types';
-import { collection, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, orderBy, onSnapshot, doc, getDoc } from '../firebase/config';
 import { ArrowLeft, Phone, Video, Send, Smile, Reply, Trash2, Copy, Heart, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 

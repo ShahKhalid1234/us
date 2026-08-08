@@ -68,9 +68,28 @@ export const ForgotPassword: React.FC = () => {
             <div>
               <h2 className="text-xl font-bold text-slate-100 tracking-wide">Reset Link Sent!</h2>
               <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-                Check your inbox at <span className="text-violet-300 font-medium">{email}</span>. Follow the instructions in the email to recover your account.
+                Check your inbox at <span className="text-violet-300 font-medium">{email}</span>.
               </p>
             </div>
+
+            {/* High-visibility Deliverability / Spam Callout */}
+            <div className="text-left p-4 rounded-xl bg-violet-950/20 border border-violet-900/30 text-xs text-slate-300 space-y-2.5 leading-relaxed">
+              <p className="font-semibold text-violet-300 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-violet-400 shrink-0" />
+                Deliverability Notice (Spam/Junk Folder)
+              </p>
+              <p>
+                Because this app runs in a secure sandbox, password reset emails are sent from:
+              </p>
+              <div className="font-mono bg-slate-950 px-2 py-1.5 rounded border border-slate-900 text-violet-200 select-all overflow-x-auto break-all text-[11px]">
+                noreply@perceptive-upgrade-j5jvd.firebaseapp.com
+              </div>
+              <p>
+                Email providers (like Gmail) will frequently filter emails from newly registered subdomains. 
+                <strong className="text-violet-200"> Please check your Spam, Junk, and Promotions folders!</strong>
+              </p>
+            </div>
+
             <button
               onClick={() => navigateTo('/login')}
               className="w-full py-3 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-sm font-semibold transition-all cursor-pointer"

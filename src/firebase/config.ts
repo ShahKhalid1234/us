@@ -20,4 +20,5 @@ export const db = initializeFirestore(app, {}, firestoreDbId);
 
 export const auth = getAuth(app);
 export const storage = getStorage(app);
+export * from './firestore-proxy';
 export default app;

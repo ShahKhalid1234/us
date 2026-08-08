@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { collection, query, where, onSnapshot, doc } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, onSnapshot, doc } from '../firebase/config';
 import { useAuth } from './AuthContext';
 import { WebRTCCall, UserProfile } from '../types';
 import { callService } from '../services/callService';

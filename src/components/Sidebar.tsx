@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation } from '../contexts/NavigationContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Home, MessageSquare, Users, Search, Settings, LogOut, Heart, Bell } from 'lucide-react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, onSnapshot } from '../firebase/config';
 
 export const Sidebar: React.FC = () => {
   const { currentPath, navigateTo } = useNavigation();

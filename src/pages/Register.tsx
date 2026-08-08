@@ -10,7 +10,6 @@ import { UserProfile } from '../types';
 
 export const Register: React.FC = () => {
   const { navigateTo } = useNavigation();
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +30,7 @@ export const Register: React.FC = () => {
     setError(null);
 
     // Frontend validations
-    if (!email || !username || !displayName || !password || !confirmPassword) {
+    if (!username || !displayName || !password || !confirmPassword) {
       setError("Please fill in all fields.");
       return;
     }
@@ -67,8 +66,11 @@ export const Register: React.FC = () => {
         return;
       }
 
+      // Generate virtual email address under the hood
+      const virtualEmail = `${username.toLowerCase().trim()}@luvora.user`;
+
       // 2. Create Firebase Auth user
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, virtualEmail, password);
       const user = userCredential.user;
 
       // 3. Create profile document in firestore
@@ -86,20 +88,22 @@ export const Register: React.FC = () => {
 
       await dbService.createUserProfile(profileData);
 
-      // 4. Send email verification
-      await sendEmailVerification(user);
+      // Bypass verification for username accounts
+      localStorage.setItem('bypass_verification', 'true');
 
-      // 5. Navigate to verification screen
-      navigateTo('/verify-email');
+      // 4. Navigate directly to home
+      navigateTo('/home');
     } catch (err: any) {
       console.error("Registration error:", err);
       let friendlyError = "Something went wrong. Please try again.";
       if (err.code === 'auth/email-already-in-use') {
-        friendlyError = "An account with this email address already exists.";
+        friendlyError = "An account with this username already exists.";
       } else if (err.code === 'auth/invalid-email') {
-        friendlyError = "The email address is invalid.";
+        friendlyError = "The credentials format is invalid.";
       } else if (err.code === 'auth/weak-password') {
         friendlyError = "The password is too weak.";
+      } else if (err.code === 'auth/operation-not-allowed') {
+        friendlyError = "Email/Password sign-up is disabled in your Firebase Console. Please go to Firebase Console -> Authentication -> Sign-in methods to enable 'Email/Password'. In the meantime, you can instantly test all features using the Demo Sandbox on the Login screen!";
       }
       setError(friendlyError);
     } finally {
@@ -183,26 +187,6 @@ export const Register: React.FC = () => {
             <p className="text-[10px] text-slate-500 mt-1 pl-1">
               Used to find each other (e.g., lowercase, dots, underscores)
             </p>
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5">
-              Email Address
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                <Mail className="w-4 h-4" />
-              </span>
-              <input
-                type="email"
-                required
-                placeholder="alex@domain.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950/50 border border-slate-900 focus:border-violet-500/50 rounded-xl text-sm placeholder-slate-600 focus:outline-none transition-all"
-                id="register-email"
-              />
-            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

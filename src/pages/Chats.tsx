@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '../contexts/NavigationContext';
-import { collection, query, where, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, orderBy, onSnapshot, doc, getDoc } from '../firebase/config';
 import { Conversation, UserProfile } from '../types';
 import { MessageSquare, Heart, Sparkles, Plus, Search } from 'lucide-react';
 import { Navbar } from '../components/Navbar';

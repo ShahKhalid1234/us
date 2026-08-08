@@ -3,8 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '../contexts/NavigationContext';
 import { dbService } from '../services/dbService';
 import { UserProfile, FriendRequest } from '../types';
-import { collection, query, where, onSnapshot, doc } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, onSnapshot, doc } from '../firebase/config';
 import { Heart, Users, MessageSquare, Trash2, Check, X, ShieldAlert, Sparkles } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { motion } from 'motion/react';
@@ -29,10 +28,12 @@ export const Friends: React.FC = () => {
 
     const loadFriends = (snap1: any[], snap2: any[]) => {
       const allDocs = [...snap1, ...snap2];
-      const friendIds = allDocs.map(d => {
-        const data = d.data();
-        return data.user1Id === user.uid ? data.user2Id : data.user1Id;
-      });
+      const friendIds = allDocs
+        .map(d => {
+          const data = d.data();
+          return data.user1Id === user.uid ? data.user2Id : data.user1Id;
+        })
+        .filter(Boolean);
 
       if (friendIds.length === 0) {
         setFriendsList([]);

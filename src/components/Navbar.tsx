@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '../contexts/NavigationContext';
 import { Bell, Heart, Search, Menu, MessageSquare } from 'lucide-react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, onSnapshot } from '../firebase/config';
 import { NotificationCenter } from './NotificationCenter';
 
 interface NavbarProps {

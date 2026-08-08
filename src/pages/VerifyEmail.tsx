@@ -128,6 +128,18 @@ export const VerifyEmail: React.FC = () => {
           </button>
 
           <button
+            onClick={() => {
+              localStorage.setItem('bypass_verification', 'true');
+              navigateTo('/home');
+            }}
+            className="w-full py-3 rounded-xl bg-violet-950/40 border border-violet-900/40 hover:bg-violet-900/30 text-sm font-bold text-violet-300 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            id="btn-verify-bypass"
+          >
+            <Sparkles className="w-4 h-4 text-violet-400" />
+            <span>Skip Verification (Testing Mode)</span>
+          </button>
+
+          <button
             onClick={handleResendEmail}
             disabled={resending}
             className="w-full py-3 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-900 text-xs font-semibold text-slate-300 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"

@@ -4,8 +4,7 @@ import { useNavigation } from '../contexts/NavigationContext';
 import { useCall } from '../contexts/CallContext';
 import { dbService } from '../services/dbService';
 import { UserProfile, FriendRequest } from '../types';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, collection, query, where, getDocs, limit } from '../firebase/config';
 import { ArrowLeft, MessageSquare, Heart, Phone, Video, Calendar, Sparkles, Settings, UserPlus, AlertCircle, Sparkle } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { motion } from 'motion/react';
@@ -41,6 +40,9 @@ export const Profile: React.FC = () => {
         }
 
         const resolvedProfile = snap.docs[0].data() as UserProfile;
+        if (!resolvedProfile || !resolvedProfile.uid) {
+          throw new Error("User profile is missing a valid UID.");
+        }
         setProfile(resolvedProfile);
 
         // 2. Check status relative to current user

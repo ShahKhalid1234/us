@@ -57,8 +57,12 @@ const AppContent: React.FC = () => {
       return null;
     }
   } else {
+    // Check if user has chosen to bypass verification or is a demo user
+    const hasBypassedVerification = localStorage.getItem('bypass_verification') === 'true';
+    const isDemoUser = user.email?.endsWith('@luvora.demo') || user.email?.endsWith('@luvora.user');
+
     // If logged in, enforce email verification (excluding verify-email view itself)
-    if (!user.emailVerified && path !== '/verify-email') {
+    if (!user.emailVerified && !hasBypassedVerification && !isDemoUser && path !== '/verify-email') {
       setTimeout(() => navigateTo('/verify-email'), 0);
       return null;
     }
